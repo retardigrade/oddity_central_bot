@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: "postgres:13.2-alpine"
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - bot_network
+
+  bot:
+    build: dockerfile_bot
+    container_name: bot
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      API_TOKEN: ${API_TOKEN}
+    ports:
+      - 8080:8080
+    networks:
+      - bot_network
+
+
+networks:
+  bot_network:
+    driver: bridge
