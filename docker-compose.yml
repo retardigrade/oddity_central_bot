@@ -5,6 +5,8 @@ services:
     image: "postgres:13.2-alpine"
     container_name: postgres
     restart: always
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
@@ -21,8 +23,15 @@ services:
       - 8080:8080
     networks:
       - bot_network
+    depends_on:
+      - "db"
 
 
 networks:
   bot_network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.18.0.0/16"
+          gateway: "172.18.0.1"
